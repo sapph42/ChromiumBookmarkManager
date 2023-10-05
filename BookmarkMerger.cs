@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ChromeBookmarkMerge {
-    public class ChromeBookmarkMerge {
+    public class BookmarkMerger {
         private FileInfo bookmark_file_1;
         private FileInfo bookmark_file_2;
         public string InputFile1 {
@@ -23,7 +23,7 @@ namespace ChromeBookmarkMerge {
             } 
         }
 
-        public ChromeBookmarkMerge(string InputFile1, string InputFile2) {
+        public BookmarkMerger(string InputFile1, string InputFile2) {
             this.InputFile1 = InputFile1;
             this.InputFile2 = InputFile2;
         }

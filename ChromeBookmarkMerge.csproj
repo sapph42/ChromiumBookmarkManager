@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="ChromeBookmarkFolder.cs" />
     <Compile Include="ChromeBookmarkItem.cs" />
-    <Compile Include="ChromeBookmarkMerge.cs" />
+    <Compile Include="BookmarkMerger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
