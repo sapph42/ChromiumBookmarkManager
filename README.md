@@ -1,19 +1,127 @@
-# ChromeBookmarkMerge
- 
-# ChromeBookmarkMerge
+# ChromiumBookmarkManager
 
-## Usage
+## BookmarkFile
 
-Instantiate the class as follows:
+### Definition
 
-    string file1 = "path_to_first_bookmark_file";
-    string file2 = "path_to_second_bookmark_file";
-    string file3 = "path_to_output_file";
-    var merger = new ChromeBookmarkMerge.BookmarkMerger(file1, file2);
-    merger.Merge(file3);
+Namespace: ChromiumBookmarkManager  
+Assembly: ChromeBookmarkMerge.dll
 
-## Logic
+Provides method for merging two Chromium Bookmark files (version 1, JSON).
 
-Merge attempts to combine files without creating duplicates. Bookmarks are considered equivalent if they have the same value for URL. Folders are recursively merged based on the value for name.
+    public class BookmarkFile
+	
+### Examples
 
-Merge does not attempt to replicate Chromium's checksum. Therefore, use of Merge neccessitates removal of Bookmarks.bak, otherwise Chromium will prefer the backup over an un-checksummed file. 
+The following example demonstrates the methods of the BookmarkFile class.
+
+    using ChromiumBookmarkManager;
+	
+    class Test {
+        public static void Main() {
+            string LiveBookmarks = "C:\Users\You\AppData\Local\Google\Chrome\User Data\Default\Bookmarks";
+            var file1 = new BookmarkFile(LiveBookmarks);
+            var file2 = new BookmarkFile("C:\Users\You\Documents\Backup\Bookmarks");
+			var file3 = file1.Merge(file2);
+            foreach (Process chromeproc in Process.GetProcessesByName("chrome")) {
+                chromeproc.Kill();
+                chromeproc.WaitForExit();
+            }
+            file3.WriteFile(LiveBookmarks);
+        }
+    }
+
+## BookmarkFile Constructors
+
+### Definition
+
+Namespace: ChromiumBookmarkManager  
+Assembly: ChromeBookmarkMerge.dll
+
+Initializes a new instance of the BookmarkFile class.
+
+#### BookmarkFile()
+
+Initializes a new instance of the BookmarkFile class without a reference to the file system.
+
+#### BookmarkFile(string)
+
+Initializes a new instance of the BookmarkFile class based on a valid filesystem path provided in the string parameter.
+
+##### Parameters
+
+`BookmarkFilePath` string 
+
+The fully qualified name of the new file, or the relative file name. Do not end the path with the directory separator character. 
+
+## BookmarkFile.Merge 
+
+### Definition
+
+Namespace: ChromiumBookmarkManager  
+Assembly: ChromeBookmarkMerge.dll
+
+Merges this instance of BookmarkFile with another.
+
+#### Merge(BookmarkFile)
+
+    public BookmarkFile? Merge(BookmarkFile OtherFile);
+
+##### Parameters
+
+`OtherFile` BookmarkFile
+
+The other Chromium JSON Version 1 bookmark file that will be merged with this object.
+
+##### Returns
+
+BookmarkFile?
+
+A new BookmarkFile object with the merged data from the original object and parameter object.  Will be null under the following conditions
+
+1. BookmarkFilePath property on either object is not set.
+2. Filesystem object referenced by BookmarkFilePath property on either object does not exist.
+3. Filesystem object referenced by BookmarkFilePath property on either object is not accessible.
+4. JSON parsing fails on bookmark file referenced by BookmarkFilePath property on either object.
+
+## BookmarkFile.WriteFile
+
+### Definition
+
+Namespace: ChromiumBookmarkManager  
+Assembly: ChromeBookmarkMerge.dll
+
+Writes the JSON data associated with this object to the filesystem object referenced.
+
+#### WriteFile()
+
+    public void WriteFile();
+	
+Writes the JSON data in this object to the filesystem object referenced by the object's BookmarkFilePath.
+
+#### WriteFile(string)
+
+    public void WriteFile(string file_name)
+	
+Writes the JSON data in this object to the file system object referenced by the file_name parameter.
+
+##### Parameters
+
+`file_name` String
+
+A valid filesystem path.
+
+##### Exceptions
+
+NullReferenceException  
+No JSON data loaded in BookmarkFile object
+
+NullReferenceException  
+file_name and BookmarkFilePath are both null.
+
+IOException  
+.NET 8 and later versions: The underlying pipe is closed or disconnected.
+
+##### Remarks
+
+WriteFile will destructively overwrite any existing file at the path provided.

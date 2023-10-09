@@ -51,7 +51,7 @@
     <Compile Include="BookmarkFolder.cs" />
     <Compile Include="BookmarkItem.cs" />
     <Compile Include="BookmarkUrl.cs" />
-    <Compile Include="BookmarkMerger.cs" />
+    <Compile Include="BookmarkFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
