@@ -4,7 +4,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace ChromeBookmarkMerge {
+namespace ChromiumBookmarkManager {
     public class BookmarkMerger {
         private FileInfo bookmark_file_1;
         private FileInfo bookmark_file_2;
@@ -22,10 +22,11 @@ namespace ChromeBookmarkMerge {
                 bookmark_file_2 = new FileInfo(value);
             } 
         }
-
-        public BookmarkMerger(string InputFile1, string InputFile2) {
-            this.InputFile1 = InputFile1;
-            this.InputFile2 = InputFile2;
+        public BookmarkMerger(string BookmarkFile1, string BookmarkFile2) {
+            this.InputFile1 = BookmarkFile1;
+            this.InputFile2 = BookmarkFile2;
+            bookmark_file_1 = new FileInfo(BookmarkFile1);
+            bookmark_file_2 = new FileInfo(BookmarkFile2);
         }
         public bool Merge(string Destination) {
             if (!bookmark_file_1.Exists && !bookmark_file_2.Exists) {
@@ -62,10 +63,10 @@ namespace ChromeBookmarkMerge {
                 JObject file2_Json = JObject.Parse(file2_contents);
                 file1_Json.Remove("checksum");
                 file2_Json.Remove("checksum");
-                ChromeBookmarkFolder file1_bookmark_bar = new ChromeBookmarkFolder();
-                ChromeBookmarkFolder file1_other = new ChromeBookmarkFolder();
-                ChromeBookmarkFolder file2_bookmark_bar = new ChromeBookmarkFolder();
-                ChromeBookmarkFolder file2_other = new ChromeBookmarkFolder();
+                BookmarkFolder file1_bookmark_bar = new BookmarkFolder();
+                BookmarkFolder file1_other = new BookmarkFolder();
+                BookmarkFolder file2_bookmark_bar = new BookmarkFolder();
+                BookmarkFolder file2_other = new BookmarkFolder();
                 file1_bookmark_bar.ImportJToken(file1_Json.SelectToken("$.roots.bookmark_bar")!);
                 file1_other.ImportJToken(file1_Json.SelectToken("$.roots.other")!);
                 file2_bookmark_bar.ImportJToken(file2_Json.SelectToken("$.roots.bookmark_bar")!);

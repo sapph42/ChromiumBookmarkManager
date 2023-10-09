@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using ChromeBookmarkMerge;
 using Newtonsoft.Json.Linq;
 #nullable enable
-namespace ChromeBookmarkMerge {
-    internal class ChromeBookmarkFolder {
+namespace ChromiumBookmarkManager {
+    internal class BookmarkFolder : BookmarkItem {
 #pragma warning disable IDE1006 // Naming Styles
-        public List<object>? children { get; set; } = null;
-        public string? date_added { get; set; } = null;
-        public string? date_last_used { get; set; } = null;
+        public List<BookmarkItem>? children { get; set; } = null;
         public string? date_modified { get; set; } = null;
-        public string? guid { get; set; } = null;
-        public string? id { get; set; } = null;
-        public string? name { get; set; } = null;
-        public string? type { get; set; } = null;
+        public new string type { get; } = "folder";
         private static string? UlongStringMax(string? a, string? b) {
             if (a is null && b is null)
                 return null;
@@ -32,16 +27,13 @@ namespace ChromeBookmarkMerge {
             guid = token.Value<string>("guid");
             id = token.Value<string>("id");
             name = token.Value<string>("name");
-            type = "folder";
-            children = new List<object>();
+            children = new List<BookmarkItem>();
             JToken target = token.SelectToken("$.children")!;
-            //if (target.SelectToken("$Value") is null)
-            //    target = target.SelectToken("$[0]")!;
             foreach (JToken child in target) {
                 if (child.Value<string>("type") == "url")
-                    children.Add(child.ToObject<ChromeBookmarkItem>()!);
+                    children.Add(child.ToObject<BookmarkUrl>()!);
                 if (child.Value<string>("type") == "folder") {
-                    ChromeBookmarkFolder newFolder = new ChromeBookmarkFolder();
+                    BookmarkFolder newFolder = new BookmarkFolder();
                     newFolder.ImportJToken(child);
                     children.Add(newFolder);
                 }
@@ -50,68 +42,58 @@ namespace ChromeBookmarkMerge {
         public JToken ExportJToken() {
             return JToken.FromObject(this);
         }
-        public void Union(ChromeBookmarkFolder other, string value="live") {
-            Debug.WriteLine($"Union started on {name}");
-            string childFolderNamesJoined = string.Join(",", other.children.Where(c => c.GetType().Equals(typeof(ChromeBookmarkFolder))).Cast<ChromeBookmarkFolder>().Select(f => f.name).ToArray());
+        public void Union(BookmarkFolder other) {
+            string childFolderNamesJoined = string.Join(",", other.children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).Cast<BookmarkFolder>().Select(f => f.name).ToArray());
             if (other.name != name)
                 return;
             date_modified = UlongStringMax(date_modified, other.date_modified);
             if (other.children is null)
                 return;
-            children ??= new List<object>(); //if children is null, instantiate
-            foreach (object child in other.children) {
-                if (child.GetType().Equals(typeof(ChromeBookmarkItem))) {
+            children ??= new List<BookmarkItem>(); //if children is null, instantiate
+            foreach (BookmarkItem child in other.children) {
+                if (child.GetType().Equals(typeof(BookmarkUrl))) {
                     if (!children.Contains(child))
                         children.Add(child);
                 }
-                if (child.GetType().Equals(typeof(ChromeBookmarkFolder))) {
-                    Debug.WriteLine($"Testing {value} folder: {((ChromeBookmarkFolder)child).name}");
+                if (child.GetType().Equals(typeof(BookmarkFolder))) {
                     foreach (object localchild in children) {
-                        if (localchild.GetType().Equals(typeof(ChromeBookmarkItem)))
+                        if (localchild.GetType().Equals(typeof(BookmarkUrl)))
                             continue;
-                        Debug.WriteLine($" -- Against backup folder: {((ChromeBookmarkFolder)localchild).name}");
-                        ChromeBookmarkFolder templocal = (ChromeBookmarkFolder)localchild;
-                        ChromeBookmarkFolder tempother = (ChromeBookmarkFolder)child;
+                        BookmarkFolder templocal = (BookmarkFolder)localchild;
+                        BookmarkFolder tempother = (BookmarkFolder)child;
                         if (templocal.name == tempother.name) {
-                            Debug.WriteLine($" ---- Union perform");
-                            ((ChromeBookmarkFolder)localchild).Union((ChromeBookmarkFolder)child);
+                            ((BookmarkFolder)localchild).Union((BookmarkFolder)child);
                         }
                         continue;
                     }
                 }
             }
-            List<object> otherchildfolders = other.children.Where(c => c.GetType().Equals(typeof(ChromeBookmarkFolder))).ToList<object>();
+            List<object> otherchildfolders = other.children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).ToList<object>();
             if (otherchildfolders.Count == 0) {
-                Debug.WriteLine($"Union complete on {name} - 85");
                 return; //The other folder has no child folders are this level.  Merge unneccessary
             }
-            List<ChromeBookmarkFolder> typedOtherFolders = otherchildfolders.Cast<ChromeBookmarkFolder>().ToList<ChromeBookmarkFolder>();
+            List<BookmarkFolder> typedOtherFolders = otherchildfolders.Cast<BookmarkFolder>().ToList<BookmarkFolder>();
             List<string?> otherFolderNames = typedOtherFolders.Select(f => f.name).ToList<string?>();
-            List<object> childfolders = children.Where(c => c.GetType().Equals(typeof(ChromeBookmarkFolder))).ToList<object>();
+            List<object> childfolders = children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).ToList<object>();
             if (childfolders.Count == 0) {
                 // this folder has no child folders at this level. Absorb all child folders from other folder.
-                foreach (ChromeBookmarkFolder folder in typedOtherFolders) {
-                    Debug.WriteLine($"Copying {folder.name} to {name}");
+                foreach (BookmarkFolder folder in typedOtherFolders) {
                     children.Add(folder);
                 }
-                Debug.WriteLine($"Union complete on {name} - 97");
                 return;
             }
-            List<ChromeBookmarkFolder> typedFolders = childfolders.Cast<ChromeBookmarkFolder>().ToList<ChromeBookmarkFolder>();
+            List<BookmarkFolder> typedFolders = childfolders.Cast<BookmarkFolder>().ToList<BookmarkFolder>();
             List<string?> folderNames = typedFolders.Select(f => f.name).ToList<string?>();
             List<string?> needsCopyingNames = otherFolderNames.Except(folderNames).ToList<string?>();
             if (needsCopyingNames is null) {
-                Debug.WriteLine($"Union complete on {name} - 104");
                 return; //All folders match between both this and other folder.  Merge will be handled above.
             }
-            IEnumerable<ChromeBookmarkFolder> needsCopyingFolders = typedOtherFolders.Where(c => needsCopyingNames.Contains(c.name));
-            foreach (ChromeBookmarkFolder folder in needsCopyingFolders) {
-                Debug.WriteLine($"Copying {folder.name} to {name}");
+            IEnumerable<BookmarkFolder> needsCopyingFolders = typedOtherFolders.Where(c => needsCopyingNames.Contains(c.name));
+            foreach (BookmarkFolder folder in needsCopyingFolders) {
                 children.Add(folder);
             }
-            Debug.WriteLine($"Union complete on {name} - 112");
         }
-        public bool Equals(ChromeBookmarkFolder? other) {
+        public bool Equals(BookmarkFolder? other) {
             if (other is null)
                 return false;
             if (name != other.name)
@@ -126,25 +108,25 @@ namespace ChromeBookmarkMerge {
                 throw new NullReferenceException();
             if (children.Count == 0 && other.children.Count == 0)
                 return true;
-            foreach (ChromeBookmarkItem child in children.Where(c => c is ChromeBookmarkItem).Cast<ChromeBookmarkItem>()) {
+            foreach (BookmarkUrl child in children.Where(c => c is BookmarkUrl).Cast<BookmarkUrl>()) {
                 if (!other.children.Contains(child))
                     return false;
             }
-            foreach (ChromeBookmarkItem child in other.children.Where(c => c is ChromeBookmarkItem).Cast<ChromeBookmarkItem>()) {
+            foreach (BookmarkUrl child in other.children.Where(c => c is BookmarkUrl).Cast<BookmarkUrl>()) {
                 if (!children.Contains(child))
                     return false;
             }
-            foreach (ChromeBookmarkFolder child in children.Where(c => c is ChromeBookmarkFolder).Cast<ChromeBookmarkFolder>()) {
+            foreach (BookmarkFolder child in children.Where(c => c is BookmarkFolder).Cast<BookmarkFolder>()) {
                 if (!other.children.Contains(child))
                     return false;
             }
-            foreach (ChromeBookmarkFolder child in other.children.Where(c => c is ChromeBookmarkFolder).Cast<ChromeBookmarkFolder>()) {
+            foreach (BookmarkFolder child in other.children.Where(c => c is BookmarkFolder).Cast<BookmarkFolder>()) {
                 if (!children.Contains(child))
                     return false;
             }
             return true;
         }
-        public override bool Equals(object obj) => Equals(obj as ChromeBookmarkFolder);
+        public override bool Equals(object obj) => Equals(obj as BookmarkFolder);
         public override int GetHashCode() {
             if (children is null) {
                 if (name is null)

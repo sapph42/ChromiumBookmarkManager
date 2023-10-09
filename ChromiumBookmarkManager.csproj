@@ -48,8 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChromeBookmarkFolder.cs" />
-    <Compile Include="ChromeBookmarkItem.cs" />
+    <Compile Include="BookmarkFolder.cs" />
+    <Compile Include="BookmarkItem.cs" />
+    <Compile Include="BookmarkUrl.cs" />
     <Compile Include="BookmarkMerger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

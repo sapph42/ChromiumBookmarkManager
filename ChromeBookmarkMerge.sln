@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromeBookmarkMerge", "ChromeBookmarkMerge.csproj", "{8D38D804-1B60-4DA5-B81A-EF45812E26E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromiumBookmarkManager", "ChromiumBookmarkManager.csproj", "{8D38D804-1B60-4DA5-B81A-EF45812E26E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
