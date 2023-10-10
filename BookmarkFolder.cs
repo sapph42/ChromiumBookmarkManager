@@ -20,6 +20,10 @@ namespace ChromiumBookmarkManager {
             return UInt64.Parse(a) > UInt64.Parse(b) ? a : b;
         }
 #pragma warning restore IDE1006 // Naming Styles
+        public BookmarkFolder() { }
+        public BookmarkFolder(JToken token) {
+            ImportJToken(token);
+        }
         public void ImportJToken(JToken token) {
             date_added = token.Value<string>("date_added");
             date_last_used = token.Value<string>("date_last_used");
