@@ -43,8 +43,8 @@ namespace ChromiumBookmarkManager {
                 }
             }
         }
-        public JToken ExportJToken() {
-            return JToken.FromObject(this);
+        public JToken ExportJProperty() {
+            return JProperty.FromObject(this);
         }
         public void Union(BookmarkFolder other) {
             string childFolderNamesJoined = string.Join(",", other.children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).Cast<BookmarkFolder>().Select(f => f.name).ToArray());
