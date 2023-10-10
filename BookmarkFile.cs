@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -11,7 +12,10 @@ namespace ChromiumBookmarkManager {
         private FileInfo? fileInfo;
         public string? FilePath { get; set; }
         public BookmarkFile() { }
-        public BookmarkFile(string BookmarkFilePath) => FilePath = BookmarkFilePath;
+        public BookmarkFile(string BookmarkFilePath) {
+            FilePath = BookmarkFilePath;
+            LoadFile();
+        }
         private bool LoadFile() {
             if (FilePath is null)
                 return false;
@@ -48,22 +52,33 @@ namespace ChromiumBookmarkManager {
                 return true;
             }
             try {
-                //List<BookmarkFolder> thisRoot check immediate children of fileJson $.roots
-                BookmarkFolder this_bookmark_bar = new BookmarkFolder();
-                BookmarkFolder this_other = new BookmarkFolder();
-                BookmarkFolder other_bookmark_bar = new BookmarkFolder();
-                BookmarkFolder other_other = new BookmarkFolder();
-                Result = OtherFile;
-                this_bookmark_bar.ImportJToken(fileJson.SelectToken("$.roots.bookmark_bar")!);
-                this_other.ImportJToken(fileJson.SelectToken("$.roots.other")!);
-                other_bookmark_bar.ImportJToken(OtherFile.fileJson.SelectToken("$.roots.bookmark_bar")!);
-                other_other.ImportJToken(OtherFile.fileJson.SelectToken("$.roots.other")!);
-                other_bookmark_bar.Union(this_bookmark_bar);
-                other_other.Union(this_other);
-                Result.fileJson = OtherFile.fileJson;
-                Result.fileJson.SelectToken("$.roots.bookmark_bar")!.Replace(other_bookmark_bar.ExportJToken());
-                Result.fileJson.SelectToken("$.roots.other")!.Replace(other_other.ExportJToken());
-            } catch {
+                Dictionary<string, BookmarkFolder> roots = new Dictionary<string, BookmarkFolder>();
+                Dictionary<string, BookmarkFolder> otherRoots = new Dictionary<string, BookmarkFolder>();
+                foreach (var root in fileJson.SelectToken("$.roots")!.Children<JProperty>()) {
+                    if (root.First != null)
+                        roots.Add(root.Name, new BookmarkFolder(root.First));
+                }
+                foreach (var root in OtherFile.fileJson.SelectToken("$.roots")!.Children<JProperty>()) {
+                    if (root.First != null)
+                        otherRoots.Add(root.Name, new BookmarkFolder(root.First));
+                }
+                foreach(var root in roots) {
+                    if (otherRoots.ContainsKey(root.Key)) {
+                        otherRoots[root.Key].Union(root.Value);
+                    } else {
+                        otherRoots.Add(root.Key, root.Value);
+                    }
+                }
+                JObject outputParent = OtherFile.fileJson;
+                outputParent.RemoveAll();
+                JObject outputRoots = new JObject();
+                foreach (var root in otherRoots) {
+                    outputRoots.Add(new JProperty(root.Key, JProperty.FromObject(root.Value)));
+                }
+                outputParent.Add(new JProperty("roots", outputRoots));
+                outputParent.Add(new JProperty("version", 1));
+                Result.fileJson = (JObject?)outputParent;
+            } catch (Exception ex) {
                 Result = new BookmarkFile();
                 return false;
             }
