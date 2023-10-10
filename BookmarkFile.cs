@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -16,7 +16,7 @@ namespace ChromiumBookmarkManager {
             if (FilePath is null)
                 return false;
             fileInfo = new FileInfo(FilePath);
-            if (!fileInfo.Exists) 
+            if (!fileInfo.Exists)
                 return false;
             string file_contents;
             try {
@@ -31,40 +31,43 @@ namespace ChromiumBookmarkManager {
             }
             return true;
         }
-        public BookmarkFile? Merge(BookmarkFile OtherFile) {
+        public bool Merge(BookmarkFile OtherFile, out BookmarkFile Result) {
+            Result = new BookmarkFile();
             if (!LoadFile() && !OtherFile.LoadFile()) 
-                return null;
+                return false;
             if (fileJson is null && OtherFile.fileJson is null)
-                return null;
-            BookmarkFile destination = new BookmarkFile();
-            if (fileInfo is null || OtherFile.fileInfo is null) 
-                return null;
+                return false;
+            if (fileInfo is null || OtherFile.fileInfo is null)
+                return false;
             if (!fileInfo.Exists || fileJson is null) {
-                destination.fileJson = OtherFile.fileJson;
-                return destination;
+                Result.fileJson = OtherFile.fileJson;
+                return true;
             }
             if (!OtherFile.fileInfo.Exists || OtherFile.fileJson is null) {
-                destination.fileJson = fileJson;
-                return destination;
+                Result.fileJson = fileJson;
+                return true;
             }
             try {
+                //List<BookmarkFolder> thisRoot check immediate children of fileJson $.roots
                 BookmarkFolder this_bookmark_bar = new BookmarkFolder();
                 BookmarkFolder this_other = new BookmarkFolder();
                 BookmarkFolder other_bookmark_bar = new BookmarkFolder();
                 BookmarkFolder other_other = new BookmarkFolder();
+                Result = OtherFile;
                 this_bookmark_bar.ImportJToken(fileJson.SelectToken("$.roots.bookmark_bar")!);
                 this_other.ImportJToken(fileJson.SelectToken("$.roots.other")!);
                 other_bookmark_bar.ImportJToken(OtherFile.fileJson.SelectToken("$.roots.bookmark_bar")!);
                 other_other.ImportJToken(OtherFile.fileJson.SelectToken("$.roots.other")!);
                 other_bookmark_bar.Union(this_bookmark_bar);
                 other_other.Union(this_other);
-                destination.fileJson = OtherFile.fileJson;
-                destination.fileJson.SelectToken("$.roots.bookmark_bar")!.Replace(other_bookmark_bar.ExportJToken());
-                destination.fileJson.SelectToken("$.roots.other")!.Replace(other_other.ExportJToken());
-                return destination;
+                Result.fileJson = OtherFile.fileJson;
+                Result.fileJson.SelectToken("$.roots.bookmark_bar")!.Replace(other_bookmark_bar.ExportJToken());
+                Result.fileJson.SelectToken("$.roots.other")!.Replace(other_other.ExportJToken());
             } catch {
-                return null;
+                Result = new BookmarkFile();
+                return false;
             }
+            return true;
         }
         public void WriteFile(string? file_name = null) {
             if (fileJson is null)
