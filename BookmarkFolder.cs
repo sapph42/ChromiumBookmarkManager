@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChromeBookmarkMerge;
 using Newtonsoft.Json.Linq;
 #nullable enable
 namespace ChromiumBookmarkManager {

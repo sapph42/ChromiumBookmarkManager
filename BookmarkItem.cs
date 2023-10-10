@@ -1,4 +1,4 @@
-﻿namespace ChromeBookmarkMerge {
+﻿namespace ChromiumBookmarkManager {
 #nullable enable
 #pragma warning disable IDE1006 // Naming Styles
     internal class BookmarkItem {

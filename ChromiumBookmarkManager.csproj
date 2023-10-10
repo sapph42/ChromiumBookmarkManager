@@ -11,8 +11,8 @@
     <ProjectGuid>{8D38D804-1B60-4DA5-B81A-EF45812E26E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChromeBookmarkMerge</RootNamespace>
-    <AssemblyName>ChromeBookmarkMerge</AssemblyName>
+    <RootNamespace>ChromiumBookmarkManager</RootNamespace>
+    <AssemblyName>ChromiumBookmarkManager</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -27,7 +27,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>

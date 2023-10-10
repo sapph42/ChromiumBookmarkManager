@@ -1,7 +1,5 @@
 ﻿#nullable enable
 #pragma warning disable IDE1006 // Naming Styles
-using ChromeBookmarkMerge;
-
 namespace ChromiumBookmarkManager {
     internal class BookmarkUrl : BookmarkItem {
         public class MetaInfo {
