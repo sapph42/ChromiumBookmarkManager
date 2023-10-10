@@ -79,6 +79,7 @@ namespace ChromiumBookmarkManager {
                 outputParent.Add(new JProperty("version", 1));
                 Result.fileJson = (JObject?)outputParent;
             } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
                 Result = new BookmarkFile();
                 return false;
             }
@@ -95,10 +96,9 @@ namespace ChromiumBookmarkManager {
             }
             FileInfo target = new FileInfo(file_name);
             target.Delete();
-            using (FileStream fileStream = target.OpenWrite()) {
-                byte[] data = new UTF8Encoding(true).GetBytes(fileJson.ToString(Formatting.Indented));
-                fileStream.Write(data, 0, data.Length);
-            }
+            using FileStream fileStream = target.OpenWrite();
+            byte[] data = new UTF8Encoding(true).GetBytes(fileJson.ToString(Formatting.Indented));
+            fileStream.Write(data, 0, data.Length);
         }
     }
 }
