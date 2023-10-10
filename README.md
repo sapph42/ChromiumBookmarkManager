@@ -22,12 +22,13 @@ The following example demonstrates the methods of the BookmarkFile class.
             string LiveBookmarks = "C:\Users\You\AppData\Local\Google\Chrome\User Data\Default\Bookmarks";
             var file1 = new BookmarkFile(LiveBookmarks);
             var file2 = new BookmarkFile("C:\Users\You\Documents\Backup\Bookmarks");
-			var file3 = file1.Merge(file2);
-            foreach (Process chromeproc in Process.GetProcessesByName("chrome")) {
-                chromeproc.Kill();
-                chromeproc.WaitForExit();
-            }
-            file3.WriteFile(LiveBookmarks);
+	    if (file1.Merge(file2, out var file3) {
+                foreach (Process chromeproc in Process.GetProcessesByName("chrome")) {
+                    chromeproc.Kill();
+                    chromeproc.WaitForExit();
+                }
+                file3.WriteFile(LiveBookmarks);
+	    }
         }
     }
 
@@ -63,9 +64,9 @@ Assembly: ChromeBookmarkMerge.dll
 
 Merges this instance of BookmarkFile with another.
 
-#### Merge(BookmarkFile)
+#### Merge(BookmarkFile, BookmarkFile)
 
-    public BookmarkFile? Merge(BookmarkFile OtherFile);
+    public bool Merge(BookmarkFile OtherFile, out BookmarkFile Result);
 
 ##### Parameters
 
@@ -73,11 +74,15 @@ Merges this instance of BookmarkFile with another.
 
 The other Chromium JSON Version 1 bookmark file that will be merged with this object.
 
+`Result` BookmarkFile
+
+When this method returns, contains the merged bookmark data.
+
 ##### Returns
 
-BookmarkFile?
+bool
 
-A new BookmarkFile object with the merged data from the original object and parameter object.  Will be null under the following conditions
+Indicates if the merge succeeded.  Will be false under the following conditions
 
 1. BookmarkFilePath property on either object is not set.
 2. Filesystem object referenced by BookmarkFilePath property on either object does not exist.
