@@ -1,11 +1,11 @@
-# ChromiumBookmarkManager
+# SapphTools.BookmarkManager.Chromium
 
 ## BookmarkFile
 
 ### Definition
 
-Namespace: ChromiumBookmarkManager  
-Assembly: ChromeBookmarkMerge.dll
+Namespace: SapphTools.BookmarkManager.Chromium  
+Assembly: SapphTools.BookmarkManager.Chromium.dll
 
 Provides method for merging two Chromium Bookmark files (version 1, JSON).
 
@@ -15,7 +15,7 @@ Provides method for merging two Chromium Bookmark files (version 1, JSON).
 
 The following example demonstrates the methods of the BookmarkFile class.
 
-    using ChromiumBookmarkManager;
+    using SapphTools.BookmarkManager.Chromium;
 	
     class Test {
         public static void Main() {
@@ -36,8 +36,8 @@ The following example demonstrates the methods of the BookmarkFile class.
 
 ### Definition
 
-Namespace: ChromiumBookmarkManager  
-Assembly: ChromeBookmarkMerge.dll
+Namespace: SapphTools.BookmarkManager.Chromium  
+Assembly: SapphTools.BookmarkManager.Chromium.dll
 
 Initializes a new instance of the BookmarkFile class.
 
@@ -59,8 +59,8 @@ The fully qualified name of the new file, or the relative file name. Do not end 
 
 ### Definition
 
-Namespace: ChromiumBookmarkManager  
-Assembly: ChromeBookmarkMerge.dll
+Namespace: SapphTools.BookmarkManager.Chromium  
+Assembly: SapphTools.BookmarkManager.Chromium.dll
 
 Merges this instance of BookmarkFile with another.
 
@@ -93,8 +93,8 @@ Indicates if the merge succeeded.  Will be false under the following conditions
 
 ### Definition
 
-Namespace: ChromiumBookmarkManager  
-Assembly: ChromeBookmarkMerge.dll
+Namespace: SapphTools.BookmarkManager.Chromium  
+Assembly: SapphTools.BookmarkManager.Chromium.dll
 
 Writes the JSON data associated with this object to the filesystem object referenced.
 
