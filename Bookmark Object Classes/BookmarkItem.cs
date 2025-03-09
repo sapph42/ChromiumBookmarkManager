@@ -51,6 +51,8 @@ namespace ChromiumBookmarkManager {
             return a ?? b;
         }
     }
+
+    [JsonConverter(typeof(BookmarkItemConverter))]
     public abstract class BookmarkItem<T> : BookmarkItem where T : BookmarkItem<T> {
 
         [JsonIgnore]

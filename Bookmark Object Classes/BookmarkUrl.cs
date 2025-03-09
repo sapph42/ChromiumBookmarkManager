@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace ChromiumBookmarkManager {
+    [JsonConverter(typeof(BookmarkUrlConverter))]
     public class BookmarkUrl : BookmarkItem<BookmarkUrl> {
 
         [JsonPropertyName("meta_info")]
@@ -34,6 +35,7 @@ namespace ChromiumBookmarkManager {
 
         [JsonIgnore]
         public override int FileVal { get; } = 1;
+        public BookmarkUrl() { }
         public BookmarkUrl(
             MetaInfo? metaInfo,
             bool showIcon,

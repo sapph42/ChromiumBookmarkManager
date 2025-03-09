@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 #nullable enable
 namespace ChromiumBookmarkManager {
+    [JsonConverter(typeof(BookmarkFolderConverter))]
     public  class BookmarkFolder : BookmarkItem<BookmarkFolder> {
 
         [JsonPropertyName("children")]
@@ -30,6 +31,17 @@ namespace ChromiumBookmarkManager {
 
         [JsonIgnore]
         public override int FileVal { get; } = 0;
+        public BookmarkFolder() {
+            Children = new List<BookmarkItem>();
+            string now = NowToBookmark();
+            DateModified = now;
+            DateAdded = now;
+            DateLastUsed = "0";
+            Id = "-1";
+            Guid = new Guid().ToString();
+            Name = "Default";
+            Source = "extension";
+        }
         public BookmarkFolder(
             List<BookmarkItem> children,
             string date_modified,
@@ -137,6 +149,16 @@ namespace ChromiumBookmarkManager {
             foreach (BookmarkFolder folder in needsCopyingFolders) {
                 Children.Add(folder);
             }
+        }
+
+        private static string NowToBookmark() {
+            DateTime chromiumEpoch = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime nowLocal = DateTime.Now;
+            DateTime nowUtc = nowLocal.ToUniversalTime();
+            TimeSpan diff = nowUtc - chromiumEpoch;
+            long microsecondCount = (long)diff.TotalSeconds * 1_000_000
+                + diff.Milliseconds * 1_000;
+            return microsecondCount.ToString();
         }
         public bool Equals(BookmarkFolder? other) {
             if (other is null)

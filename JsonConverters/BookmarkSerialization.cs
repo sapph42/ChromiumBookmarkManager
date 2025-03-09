@@ -7,7 +7,7 @@ namespace ChromiumBookmarkManager {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true,
-            Converters = { new BookmarkItemConverter(), new BookmarkFolderConverter(), new BookmarkUrlConverter() }
+            Converters = { new BookmarkRootsConverter(), new BookmarkItemConverter(), new BookmarkFolderConverter(), new BookmarkUrlConverter() }
         };
     }
 }
