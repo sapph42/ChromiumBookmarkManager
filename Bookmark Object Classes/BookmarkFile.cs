@@ -34,16 +34,24 @@ namespace ChromiumBookmarkManager {
                 return false;
             try {
                 string json = File.ReadAllText(path);
-                file = JsonSerializer.Deserialize<BookmarkFile>(json, BookmarkSerialization.Options);
+                return Deserialize(json, out file);
             } catch {
                 return false;
             }
-            return true;
         }
         public void Merge(BookmarkFile otherFile) {
             Roots.Merge(otherFile.Roots);
         }
-        public string WriteFile() {
+        public static bool Deserialize(string json, out BookmarkFile? file) {
+            file = null;
+            try {
+                file = JsonSerializer.Deserialize<BookmarkFile>(json, BookmarkSerialization.Options);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+        public string Serialize() {
             return JsonSerializer.Serialize<BookmarkFile>(this, BookmarkSerialization.Options);
         }
     }

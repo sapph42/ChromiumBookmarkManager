@@ -40,9 +40,11 @@ namespace ChromiumBookmarkManager {
             Synced = synced;
         }
         public void Merge(BookmarkRoots otherRoots) {
-            BookmarkBar.Merge(otherRoots.BookmarkBar);
-            Other.Merge(otherRoots.Other);
-            Synced.Merge(otherRoots.Synced);
+            HashSet<int> globalIds = new HashSet<int> { 1, 2, 3 };
+            int nextAvailable = 4;
+            BookmarkBar.Merge(otherRoots.BookmarkBar, globalIds, ref nextAvailable);
+            Other.Merge(otherRoots.Other, globalIds, ref nextAvailable);
+            Synced.Merge(otherRoots.Synced, globalIds, ref nextAvailable);
         }
         public static BookmarkFolder GenerateDefaultRoot(Roots root) {
             List<BookmarkItem> noChildren = new List<BookmarkItem>();

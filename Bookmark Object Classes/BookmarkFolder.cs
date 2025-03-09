@@ -71,86 +71,66 @@ namespace ChromiumBookmarkManager {
             Name = name;
             Source = source;
         }
-        public override void Merge(BookmarkFolder otherFolder) {
+        public override void Merge(BookmarkFolder otherFolder, HashSet<int> globalIds, ref int nextAvailable) {
             DateAdded = UlongStringMin(DateAdded, otherFolder.DateAdded);
             DateLastUsed = UlongStringMax(DateLastUsed, otherFolder.DateLastUsed);
             DateModified = UlongStringMax(DateModified, otherFolder.DateModified);
             if (DateAdded == otherFolder.DateAdded)
                 Guid = otherFolder.Guid;
-            if (Children.Count == 0)
-                Children = otherFolder.Children;
             if (otherFolder.Children.Count == 0)
                 return;
+
+            if (Children.Count == 0){
+                Children = otherFolder.Children;
+                return;
+            }
+
+            var folderLookup = Children.OfType<BookmarkFolder>().ToDictionary(f => f.Id, f => f);
+            var urlLookup = Children.OfType<BookmarkUrl>().ToDictionary(u => (u.Id, u.Url), u => u);
+
             foreach (BookmarkItem item in otherFolder.Children) {
                 if (item is BookmarkUrl url) {
-                    if (!Children.Contains(url))
-                        Children.Add(url);
+                    if (urlLookup.TryGetValue((url.Id, url.Url), out var existingUrl))
+                        existingUrl.Merge(url);
                     else {
-                        BookmarkUrl urlMatch = (BookmarkUrl)Children.First(bu => bu is BookmarkUrl urlMatch && bu.Id == url.Id && bu.Name == url.Name && urlMatch.Url == url.Url);
-                        urlMatch.Merge(url);
+                        Children.Add(url);
                     }
                 } else if (item is BookmarkFolder folder) {
-                    if (Children.All(bf => bf.Id != folder.Id && bf.Name != folder.Name))
-                        Children.Add(folder);
+                    if (folderLookup.TryGetValue(folder.Id, out var existingFolder)) {
+                        if (UlongStringToDate(folder.DateAdded) < UlongStringToDate(existingFolder.DateAdded))
+                            existingFolder.Id = folder.Id;
+                        existingFolder.Merge(folder, globalIds, ref nextAvailable);
+                    }
                     else {
-                        BookmarkFolder folderMatch = (BookmarkFolder)Children.First(bf => bf.Id == folder.Id && bf.Name == folder.Name && bf is BookmarkFolder);
-                        folderMatch.Merge(folder);
+                        Children.Add(folder);
                     }
                 }
             }
+            FixDuplicateIds(globalIds, ref nextAvailable);
         }
-        public void Union(BookmarkFolder other) {
-            string childFolderNamesJoined = string.Join(",", other.Children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).Cast<BookmarkFolder>().Select(f => f.Name).ToArray());
-            if (other.Name != Name)
-                return;
-            DateModified = UlongStringMax(DateModified, other.DateModified);
-            if (other.Children is null)
-                return;
-            Children ??= new List<BookmarkItem>(); //if children is null, instantiate
-            foreach (BookmarkItem child in other.Children) {
-                if (child.GetType().Equals(typeof(BookmarkUrl))) {
-                    if (!Children.Contains(child))
-                        Children.Add(child);
-                }
-                if (child.GetType().Equals(typeof(BookmarkFolder))) {
-                    foreach (object localchild in Children) {
-                        if (localchild.GetType().Equals(typeof(BookmarkUrl)))
-                            continue;
-                        BookmarkFolder templocal = (BookmarkFolder)localchild;
-                        BookmarkFolder tempother = (BookmarkFolder)child;
-                        if (templocal.Name == tempother.Name) {
-                            ((BookmarkFolder)localchild).Union((BookmarkFolder)child);
-                        }
-                        continue;
-                    }
-                }
-            }
-            List<object> otherchildfolders = other.Children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).ToList<object>();
-            if (otherchildfolders.Count == 0) {
-                return; //The other folder has no child folders are this level.  Merge unneccessary
-            }
-            List<BookmarkFolder> typedOtherFolders = otherchildfolders.Cast<BookmarkFolder>().ToList<BookmarkFolder>();
-            List<string?> otherFolderNames = typedOtherFolders.Select(f => f.Name).ToList<string?>();
-            List<object> childfolders = Children.Where(c => c.GetType().Equals(typeof(BookmarkFolder))).ToList<object>();
-            if (childfolders.Count == 0) {
-                // this folder has no child folders at this level. Absorb all child folders from other folder.
-                foreach (BookmarkFolder folder in typedOtherFolders) {
-                    Children.Add(folder);
-                }
-                return;
-            }
-            List<BookmarkFolder> typedFolders = childfolders.Cast<BookmarkFolder>().ToList<BookmarkFolder>();
-            List<string?> folderNames = typedFolders.Select(f => f.Name).ToList<string?>();
-            List<string?> needsCopyingNames = otherFolderNames.Except(folderNames).ToList<string?>();
-            if (needsCopyingNames is null) {
-                return; //All folders match between both this and other folder.  Merge will be handled above.
-            }
-            IEnumerable<BookmarkFolder> needsCopyingFolders = typedOtherFolders.Where(c => needsCopyingNames.Contains(c.Name));
-            foreach (BookmarkFolder folder in needsCopyingFolders) {
-                Children.Add(folder);
+        private void FixDuplicateIds(HashSet<int> globalIds, ref int nextAvailable) {
+            if (nextAvailable < 4)
+                nextAvailable = 4;
+            AssignUniqueIds(globalIds, ref nextAvailable);
+        }
+        private void AssignUniqueIds(HashSet<int> globalIds, ref int nextAvailable) {
+            int folderId = int.Parse(Id);
+            if (folderId > 3 && !globalIds.Add(folderId))
+                Id = GenerateUniqueId(globalIds, ref nextAvailable);
+            foreach (var child in Children) {
+                int childId = int.Parse(child.Id);
+                if (child is BookmarkUrl && childId > 3 && !globalIds.Add(childId))
+                    Id = GenerateUniqueId(globalIds, ref nextAvailable);
+                else if (child is BookmarkFolder childFolder)
+                    childFolder.AssignUniqueIds(globalIds, ref nextAvailable);
             }
         }
-
+        private string GenerateUniqueId(HashSet<int> existingIds, ref int nextAvailable) {
+            while (existingIds.Contains(nextAvailable) || nextAvailable <= 3)
+                nextAvailable++;
+            existingIds.Add(nextAvailable);
+            return nextAvailable.ToString();
+        }
         private static string NowToBookmark() {
             DateTime chromiumEpoch = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime nowLocal = DateTime.Now;
