@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     internal class BookmarkItemConverter : JsonConverter<BookmarkItem> {
         public override BookmarkItem Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             using JsonDocument doc = JsonDocument.ParseValue(ref reader);

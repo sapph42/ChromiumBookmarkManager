@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using JsonIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     internal class BookmarkSerialization {
         internal static readonly JsonSerializerOptions Options = new JsonSerializerOptions() {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

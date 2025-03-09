@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     public class BookmarkRootsConverter : JsonConverter<BookmarkRoots> {
         public override BookmarkRoots Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             if (reader.TokenType != JsonTokenType.StartObject)

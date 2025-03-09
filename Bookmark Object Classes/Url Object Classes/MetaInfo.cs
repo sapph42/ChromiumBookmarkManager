@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 #nullable enable
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     public class MetaInfo {
 
         [JsonPropertyName("power_bookmark_meta")]

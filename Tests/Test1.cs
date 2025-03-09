@@ -1,4 +1,4 @@
-﻿using ChromiumBookmarkManager;
+﻿using SapphTools.BookmarkManager.Chromium;
 
 namespace Tests {
     [TestClass]

@@ -1,7 +1,8 @@
 ﻿#nullable enable
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     [JsonConverter(typeof(BookmarkUrlConverter))]
     public class BookmarkUrl : BookmarkItem<BookmarkUrl> {
 
@@ -78,6 +79,9 @@ namespace ChromiumBookmarkManager {
             if (DateAdded == otherUrl.DateAdded)
                 Guid = otherUrl.Guid;
             VisitCount = VisitCount > otherUrl.VisitCount ? VisitCount : otherUrl.VisitCount;
+        }
+        public override void Merge(BookmarkUrl other, HashSet<int> globalIds, ref int nextAvailable) {
+            throw new System.NotImplementedException();
         }
         public bool Equals(BookmarkUrl? other) {
             if (other is null)

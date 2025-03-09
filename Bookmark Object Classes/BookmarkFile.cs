@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 #nullable enable
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     public class BookmarkFile {
 
         [JsonPropertyName("roots")]

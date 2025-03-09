@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     public enum Roots {
         Bookmark_Bar = 1,
         Other = 2,

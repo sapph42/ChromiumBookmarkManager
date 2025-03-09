@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 
 #nullable enable
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     [JsonConverter(typeof(BookmarkFolderConverter))]
     public  class BookmarkFolder : BookmarkItem<BookmarkFolder> {
 
@@ -70,6 +70,9 @@ namespace ChromiumBookmarkManager {
             Id = id;
             Name = name;
             Source = source;
+        }
+        public override void Merge(BookmarkFolder other) {
+            throw new NotImplementedException();
         }
         public override void Merge(BookmarkFolder otherFolder, HashSet<int> globalIds, ref int nextAvailable) {
             DateAdded = UlongStringMin(DateAdded, otherFolder.DateAdded);

@@ -2,7 +2,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
 #nullable enable
     [JsonConverter(typeof(BookmarkItemConverter))]
     public abstract class BookmarkItem {

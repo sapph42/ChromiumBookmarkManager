@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ChromiumBookmarkManager {
+namespace SapphTools.BookmarkManager.Chromium {
     internal class BookmarkUrlConverter : JsonConverter<BookmarkUrl> {
         public override BookmarkUrl Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             if (reader.TokenType != JsonTokenType.StartObject)
