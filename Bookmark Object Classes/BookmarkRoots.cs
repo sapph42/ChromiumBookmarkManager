@@ -59,7 +59,6 @@ namespace SapphTools.BookmarkManager.Chromium {
                 _ => new BookmarkFolder(noChildren, now, now, neverUsed, guid, id, "bookmark_bar", noSource),
             };
         }
-
         private static string NowToBookmark() {
             DateTime chromiumEpoch = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime nowLocal = DateTime.Now;
