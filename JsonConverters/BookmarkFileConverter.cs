@@ -48,7 +48,7 @@ namespace SapphTools.BookmarkManager.Chromium {
 
             writer.WritePropertyName("roots");
             JsonSerializer.Serialize(writer, value.Roots, options);
-            writer.WriteString("version", value.Version.ToString());
+            writer.WriteNumber("version", value.Version);
 
             writer.WriteEndObject();
         }

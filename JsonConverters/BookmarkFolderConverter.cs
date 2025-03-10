@@ -85,6 +85,7 @@ namespace SapphTools.BookmarkManager.Chromium {
                 writer.WriteEndArray();
             }
             writer.WriteString("date_added", value.DateAdded);
+            writer.WriteString("date_last_used", value.DateLastUsed);
             writer.WriteString("date_modified", value.DateModified);
             writer.WriteString("guid", value.Guid);
             writer.WriteString("id", value.Id);

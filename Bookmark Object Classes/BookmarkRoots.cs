@@ -40,8 +40,8 @@ namespace SapphTools.BookmarkManager.Chromium {
             Synced = synced;
         }
         public void Merge(BookmarkRoots otherRoots) {
-            HashSet<int> globalIds = new HashSet<int> { 1, 2, 3 };
-            int nextAvailable = 4;
+            HashSet<int> globalIds = new HashSet<int>();
+            int nextAvailable = 1;
             BookmarkBar.Merge(otherRoots.BookmarkBar, globalIds, ref nextAvailable);
             Other.Merge(otherRoots.Other, globalIds, ref nextAvailable);
             Synced.Merge(otherRoots.Synced, globalIds, ref nextAvailable);
