@@ -119,6 +119,7 @@
   <ItemGroup>
     <Compile Include="Bookmark Object Classes\BookmarkFolder.cs" />
     <Compile Include="Bookmark Object Classes\BookmarkItem.cs" />
+    <Compile Include="JsonConverters\BookmarkFileConverter.cs" />
     <Compile Include="JsonConverters\BookmarkRootsConverter.cs" />
     <Compile Include="JsonConverters\BookmarkUrlConverter.cs" />
     <Compile Include="JsonConverters\BookmarkFolderConverter.cs" />
