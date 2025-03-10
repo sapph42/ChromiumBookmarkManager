@@ -24,7 +24,7 @@ namespace SapphTools.BookmarkManager.Chromium {
         public override int FolderCount => Children.Sum(bi => bi.FolderCount + bi.FolderVal);
 
         [JsonIgnore]
-        public override int UrlCount => Children.Sum(bi => bi.UrlCount + bi.FolderVal);
+        public override int UrlCount => Children.Sum(bi => bi.UrlCount + bi.FileVal);
 
         [JsonIgnore]
         public override int FolderVal { get; } = 1;
