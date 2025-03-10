@@ -43,7 +43,7 @@ namespace SapphTools.BookmarkManager.Chromium {
         public abstract void Merge(BookmarkItem other, HashSet<int> globalIds, ref int nextAvailable);
         protected static string UlongStringMax(string? a, string? b) {
             if (ulong.TryParse(a, out ulong aCast) && ulong.TryParse(b, out ulong bCast)) {
-                if (aCast == 0)
+                if (aCast == 0 && b != null)
                     return b;
                 return aCast > bCast ? a! : b!;
             }
