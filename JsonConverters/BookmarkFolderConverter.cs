@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -79,7 +80,7 @@ namespace SapphTools.BookmarkManager.Chromium {
             } else {
                 writer.WritePropertyName("children");
                 writer.WriteStartArray();
-                foreach (BookmarkItem item in value.Children) {
+                foreach (BookmarkItem item in value.Children.OrderBy(c => c.Id)) {
                     JsonSerializer.Serialize(writer, item, options);
                 }
                 writer.WriteEndArray();
