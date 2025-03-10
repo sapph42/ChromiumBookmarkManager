@@ -80,7 +80,7 @@ namespace SapphTools.BookmarkManager.Chromium {
             } else {
                 writer.WritePropertyName("children");
                 writer.WriteStartArray();
-                foreach (BookmarkItem item in value.Children.OrderBy(c => c.Id)) {
+                foreach (BookmarkItem item in value.Children.OrderBy(c => int.Parse(c.Id))) {
                     JsonSerializer.Serialize(writer, item, options);
                 }
                 writer.WriteEndArray();
