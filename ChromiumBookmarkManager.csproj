@@ -14,8 +14,8 @@
     <ProjectGuid>{8D38D804-1B60-4DA5-B81A-EF45812E26E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChromiumBookmarkManager</RootNamespace>
-    <AssemblyName>ChromiumBookmarkManager</AssemblyName>
+    <RootNamespace>SapphTools.BookmarkManager.Chromium</RootNamespace>
+    <AssemblyName>SapphTools.BookmarkManager.Chromium</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
