@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>hhttps://github.com/sapph42/ChromiumBookmarkManager</projectUrl>
+    <description>$description$</description>
+    <releaseNotes>Switch from Newtonsoft to System.Text.  Major refactor, increased protection against edge cases.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>chromium bookmarks json</tags>
+	<readme>docs\README.md</readme>
+  </metadata>
+  <files>
+	<file src=".\docs\README.md" target="docs\" />
+  </files>
+</package>

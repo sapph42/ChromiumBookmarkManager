@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SapphTools.BookmarkManager.Chromium")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Supports intelligent merging of Chromium JSON Bookmarks")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SapphTools.BookmarkManager.Chromium")]
+[assembly: AssemblyCompany("SapphTools")]
+[assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("Copyright © Nicholas Gibson 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
