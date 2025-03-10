@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
+#nullable enable
 namespace SapphTools.BookmarkManager.Chromium {
     public class BookmarkRootsConverter : JsonConverter<BookmarkRoots> {
         public override BookmarkRoots Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
@@ -19,18 +16,29 @@ namespace SapphTools.BookmarkManager.Chromium {
                 if (reader.TokenType != JsonTokenType.PropertyName)
                     throw new JsonException("Expected PropertyName token");
 
-                string propertyName = reader.GetString();
+                string propertyName = reader.GetString() ?? "";
                 reader.Read();
+
+                BookmarkFolder? root = JsonSerializer.Deserialize<BookmarkFolder>(ref reader, options);
 
                 switch (propertyName) {
                     case "bookmark_bar":
-                        roots.BookmarkBar = JsonSerializer.Deserialize<BookmarkFolder>(ref reader, options);
+                        if (root is null)
+                            roots.BookmarkBar = BookmarkRoots.GenerateDefaultRoot(Roots.Bookmark_Bar);
+                        else
+                            roots.BookmarkBar = root;
                         break;
                     case "other":
-                        roots.Other = JsonSerializer.Deserialize<BookmarkFolder>(ref reader, options);
+                        if (root is null)
+                            roots.BookmarkBar = BookmarkRoots.GenerateDefaultRoot(Roots.Other);
+                        else
+                            roots.Other = root;
                         break;
                     case "synced":
-                        roots.Synced = JsonSerializer.Deserialize<BookmarkFolder>(ref reader, options);
+                        if (root is null)
+                            roots.BookmarkBar = BookmarkRoots.GenerateDefaultRoot(Roots.Synced);
+                        else
+                            roots.Synced = root;
                         break;
                     default:
                         reader.Skip();
@@ -41,7 +49,17 @@ namespace SapphTools.BookmarkManager.Chromium {
         }
 
         public override void Write(Utf8JsonWriter writer, BookmarkRoots value, JsonSerializerOptions options) {
-            JsonSerializer.Serialize(writer, value, options);
+            writer.WriteStartObject();
+
+            writer.WritePropertyName("bookmark_bar");
+            JsonSerializer.Serialize(writer, value.BookmarkBar, options);
+            writer.WritePropertyName("other");
+            JsonSerializer.Serialize(writer, value.Other, options);
+            writer.WritePropertyName("synced");
+            JsonSerializer.Serialize(writer, value.Synced, options);
+
+            writer.WriteEndObject();
         }
     }
 }
+#nullable disable

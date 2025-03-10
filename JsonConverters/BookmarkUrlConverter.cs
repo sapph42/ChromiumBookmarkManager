@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+#nullable enable
 namespace SapphTools.BookmarkManager.Chromium {
     internal class BookmarkUrlConverter : JsonConverter<BookmarkUrl> {
         public override BookmarkUrl Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
@@ -17,35 +18,35 @@ namespace SapphTools.BookmarkManager.Chromium {
                 if (reader.TokenType != JsonTokenType.PropertyName)
                     throw new JsonException("Expected PropertyName token");
 
-                string propertyName = reader.GetString();
+                string propertyName = reader.GetString() ?? "";
                 reader.Read(); // Move to value
 
                 switch (propertyName) {
                     case "date_added":
-                        bookmarkUrl.DateAdded = reader.GetString();
+                        bookmarkUrl.DateAdded = reader.GetString() ?? "0";
                         break;
                     case "date_last_used":
-                        bookmarkUrl.DateLastUsed = reader.GetString();
+                        bookmarkUrl.DateLastUsed = reader.GetString() ?? "0";
                         break;
                     case "guid":
-                        bookmarkUrl.Guid = reader.GetString();
+                        bookmarkUrl.Guid = reader.GetString() ?? new Guid().ToString();
                         break;
                     case "id":
-                        bookmarkUrl.Id = reader.GetString();
+                        bookmarkUrl.Id = reader.GetString() ?? "4";
                         break;
                     case "name":
-                        bookmarkUrl.Name = reader.GetString();
+                        bookmarkUrl.Name = reader.GetString() ?? "";
                         break;
                     case "source":
-                        bookmarkUrl.Source = reader.GetString();
+                        bookmarkUrl.Source = reader.GetString() ?? "unknown";
                         break;
                     case "type":
-                        string type = reader.GetString();
+                        string? type = reader.GetString();
                         if (type != "url")
                             throw new JsonException($"Unexpected type '{type}', expected 'url'");
                         break;
                     case "url":
-                        bookmarkUrl.Url = reader.GetString();
+                        bookmarkUrl.Url = reader.GetString() ?? "";
                         break;
                     case "visit_count":
                         bookmarkUrl.VisitCount = reader.GetInt32();
@@ -87,3 +88,4 @@ namespace SapphTools.BookmarkManager.Chromium {
         }
     }
 }
+#nullable disable
