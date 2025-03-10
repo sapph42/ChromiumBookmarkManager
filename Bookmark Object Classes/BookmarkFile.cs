@@ -5,22 +5,24 @@ using System.Text.Json.Serialization;
 
 #nullable enable
 namespace SapphTools.BookmarkManager.Chromium {
+    [JsonConverter(typeof(BookmarkFileConverter))]
     public class BookmarkFile {
 
         [JsonPropertyName("roots")]
         [JsonInclude]
-        BookmarkRoots Roots { get; set; }
+        internal BookmarkRoots Roots { get; set; }
 
         [JsonPropertyName("version")]
         [JsonInclude]
-        int Version => 1;
+        internal int Version => 1;
 
         [JsonIgnore]
         public int FolderCount => Roots.FolderCount;
 
         [JsonIgnore]
-        public int UrlCount => Roots.FolderCount;
-        internal BookmarkFile(BookmarkRoots roots) {
+        public int UrlCount => Roots.UrlCount;
+
+        public BookmarkFile(BookmarkRoots roots) {
             Roots = roots;
         }
         public void Merge(BookmarkFile otherFile) {

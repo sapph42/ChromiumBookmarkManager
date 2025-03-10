@@ -25,7 +25,7 @@ namespace SapphTools.BookmarkManager.Chromium {
         public BookmarkFolder Synced { get; set; }
 
         [JsonIgnore]
-        public int FolderCount => BookmarkBar.FolderCount + Other.FolderCount + Synced.FolderCount;
+        public int FolderCount => BookmarkBar.FolderCount + Other.FolderCount + Synced.FolderCount + 3;
 
         [JsonIgnore]
         public int UrlCount => BookmarkBar.UrlCount + Other.UrlCount + Synced.UrlCount;

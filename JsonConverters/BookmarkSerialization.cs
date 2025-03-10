@@ -7,7 +7,7 @@ namespace SapphTools.BookmarkManager.Chromium {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true,
-            Converters = { new BookmarkRootsConverter(), new BookmarkItemConverter(), new BookmarkFolderConverter(), new BookmarkUrlConverter() }
+            Converters = { new BookmarkFileConverter(), new BookmarkRootsConverter(), new BookmarkItemConverter(), new BookmarkFolderConverter(), new BookmarkUrlConverter() }
         };
     }
 }
